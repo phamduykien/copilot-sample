@@ -8,3 +8,4 @@ CREATE TABLE Employee
     Address NVARCHAR(50),
     PhoneNumber NVARCHAR(50)
 )
+

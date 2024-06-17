@@ -16,7 +16,7 @@ FOR
 	SELECT StockItemID, BinLocation
 --cursor base SELECT statement
 FROM Warehouse.StockItemHoldings
-WHERE BinLocation LIKE 'K-9'
+WHERE BinLocation LIKE 'K9'
 
 OPEN MyCursorName
 FETCH NEXT FROM MyCursorName
@@ -40,4 +40,15 @@ DEALLOCATE MyCursorName
 SELECT OrderLineID, Description, SUM(Quantity) AS Quantity, SUM(PickedQuantity) AS PickedQuantityX
 FROM @SalesDetail sd
 	JOIN Sales.Orders h ON sd.OrderID = h.OrderID
+GROUP BY OrderLineID, Description
+
+
+-- Optimized query
+SELECT OrderLineID, Description, SUM(Quantity) AS Quantity, SUM(PickedQuantity) AS PickedQuantityX
+FROM Sales.OrderLines ol
+       JOIN Sales.Orders h ON ol.OrderID = h.OrderID
+WHERE StockItemID IN
+       (SELECT StockItemID
+       FROM Warehouse.StockItemHoldings
+       WHERE BinLocation LIKE 'K9')
 GROUP BY OrderLineID, Description
